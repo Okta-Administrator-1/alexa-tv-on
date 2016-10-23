@@ -14,7 +14,7 @@ const RESPONSE_TURN_OFF = "TurnOffConfirmation";
 const ERROR_UNSUPPORTED_OPERATION = "UnsupportedOperationError";
 const ERROR_UNEXPECTED_INFO = "UnexpectedInformationReceivedError";
 
-function SkillAdapter(callback) {
+let SkillAdapter = function(callback) {
   this.callback = callback;
 }
 
@@ -83,4 +83,4 @@ let createDirective = function(header, payload) {
   };
 }
 
-exports.module = SkillAdapter;
+module.exports = SkillAdapter;
