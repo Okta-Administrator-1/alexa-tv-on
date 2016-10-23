@@ -18,11 +18,6 @@ let SkillAdapter = function(callback) {
   this.callback = callback;
 }
 
-SkillAdapter.prototype.REQUEST_TURN_ON = REQUEST_TURN_ON;
-SkillAdapter.prototype.RESPONSE_TURN_ON = RESPONSE_TURN_ON;
-SkillAdapter.prototype.REQUEST_TURN_OFF = REQUEST_TURN_OFF;
-SkillAdapter.prototype.RESPONSE_TURN_OFF = RESPONSE_TURN_OFF;
-
 SkillAdapter.prototype.handle = function(event, eventHandler) {
   console.log(JSON.stringify(event));
 
@@ -43,7 +38,7 @@ function createResponseFor(event, eventHandler) {
     case NAMESPACE_CONTROL:
       return eventHandler.onControl(event).then(mapToControlResponse);
     default:
-      return handleUnexpectedInfo(requestedNamespace);
+      throw 'error: unhandled ' + requestedNamespace;
   }
 }
 
@@ -83,4 +78,12 @@ let createDirective = function(header, payload) {
   };
 }
 
-module.exports = SkillAdapter;
+module.exports = {
+  SkillAdapter: SkillAdapter,
+  Constants: {
+    REQUEST_TURN_ON: REQUEST_TURN_ON,
+    RESPONSE_TURN_ON: RESPONSE_TURN_ON,
+    REQUEST_TURN_OFF: REQUEST_TURN_OFF,
+    RESPONSE_TURN_OFF: RESPONSE_TURN_OFF
+  }
+}

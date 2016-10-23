@@ -2,7 +2,8 @@
 
 const TV_ENDPOINT = require('./secrets').TV_ENDPOINT;
 const httpClient = require('request-promise-native');
-const SkillAdapter = require('./skill-adapter');
+const SkillAdapter = require('./skill-adapter').SkillAdapter;
+const Constants = require('./skill-adapter').Constants;
 
 exports.handler = function (event, context, callback) {
   let skillAdapter = new SkillAdapter(callback);
@@ -36,9 +37,9 @@ let eventHandler = {
   onControl: function(event) {
     let requestedName = event.header.name;
     switch (requestedName) {
-      case SkillAdapter.REQUEST_TURN_ON :
+      case Constants.REQUEST_TURN_ON :
         return handleControlTurnOn(event);
-      case SkillAdapter.REQUEST_TURN_OFF :
+      case Constants.REQUEST_TURN_OFF :
         return handleControlTurnOff(event);
       default:
         console.log("Error", "Unsupported operation" + requestedName);
@@ -49,13 +50,13 @@ let eventHandler = {
 
 let handleControlTurnOn = function(event) {
   return toggleTv().then(() => {
-    return createResponse(SkillAdapter.RESPONSE_TURN_ON);
+    return createResponse(Constants.RESPONSE_TURN_ON);
   });
 }
 
 let handleControlTurnOff = function(event) {
   return toggleTv().then(() => {
-    return createResponse(SkillAdapter.RESPONSE_TURN_OFF);
+    return createResponse(Constants.RESPONSE_TURN_OFF);
   });
 }
 
@@ -70,7 +71,7 @@ function toggleTv() {
 }
 
 let handleUnsupportedOperation = function() {
-  return createResponse(SkillAdapter.ERROR_UNSUPPORTED_OPERATION);
+  return createResponse(Constants.ERROR_UNSUPPORTED_OPERATION);
 }
 
 function createResponse(type) {
