@@ -1,0 +1,84 @@
+const NAMESPACE_CONTROL = "Alexa.ConnectedHome.Control";
+const NAMESPACE_DISCOVERY = "Alexa.ConnectedHome.Discovery";
+
+const REQUEST_DISCOVER = "DiscoverAppliancesRequest";
+const RESPONSE_DISCOVER = "DiscoverAppliancesResponse";
+
+const REQUEST_TURN_ON = "TurnOnRequest";
+const RESPONSE_TURN_ON = "TurnOnConfirmation";
+const REQUEST_TURN_OFF = "TurnOffRequest";
+const RESPONSE_TURN_OFF = "TurnOffConfirmation";
+
+const ERROR_UNSUPPORTED_OPERATION = "UnsupportedOperationError";
+const ERROR_UNEXPECTED_INFO = "UnexpectedInformationReceivedError";
+
+function SkillAdapter(callback) {
+  this.callback = callback;
+}
+
+SkillAdapter.prototype.REQUEST_TURN_ON = REQUEST_TURN_ON;
+SkillAdapter.prototype.RESPONSE_TURN_ON = RESPONSE_TURN_ON;
+SkillAdapter.prototype.REQUEST_TURN_OFF = REQUEST_TURN_OFF;
+SkillAdapter.prototype.RESPONSE_TURN_OFF = RESPONSE_TURN_OFF;
+
+SkillAdapter.prototype.handle = function(event, eventHandler) {
+  console.log(JSON.stringify(event));
+
+  createResponseFor(event).then((data) => {
+    console.log(JSON.stringify(data));
+    this.callback(null, data);
+  }).catch((error) => {
+    console.log(JSON.stringify(error));
+    this.callback(null, null);
+  });
+}
+
+function createResponseFor(event) {
+  var requestedNamespace = event.header.namespace;
+  switch (requestedNamespace) {
+    case NAMESPACE_DISCOVERY:
+      return eventHandler.onDiscovery().then(mapToDiscoveryResponse);
+    case NAMESPACE_CONTROL:
+      return eventHandler.onControl(event).then(mapToControlResponse);
+    default:
+      return handleUnexpectedInfo(requestedNamespace);
+  }
+}
+
+var mapToDiscoveryResponse = function(payload) {
+  var header = createHeader(NAMESPACE_DISCOVERY, RESPONSE_DISCOVER);
+  return Promise.resolve(createDirective(header, payload));
+}
+
+var mapToControlResponse = function(data) {
+  var header = createHeader(NAMESPACE_CONTROL, data.type);
+  return Promise.resolve(createDirective(header, data.payload));
+}
+
+var createHeader = function(namespace, name) {
+  return {
+    "messageId": createMessageId(),
+    "namespace": namespace,
+    "name": name,
+    "payloadVersion": "2"
+  };
+}
+
+function createMessageId() {
+  var d = new Date().getTime();
+  var uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+    var r = (d + Math.random()*16)%16 | 0;
+    d = Math.floor(d/16);
+    return (c=='x' ? r : (r&0x3|0x8)).toString(16);
+  });
+  return uuid;
+}
+
+var createDirective = function(header, payload) {
+  return {
+    "header" : header,
+    "payload" : payload
+  };
+}
+
+exports.module = SkillAdapter;
