@@ -1,2 +1,4 @@
 node_modules/
 secrets.js
+*.zip
+.DS_Store

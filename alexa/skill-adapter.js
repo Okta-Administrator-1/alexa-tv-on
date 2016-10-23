@@ -26,7 +26,7 @@ SkillAdapter.prototype.RESPONSE_TURN_OFF = RESPONSE_TURN_OFF;
 SkillAdapter.prototype.handle = function(event, eventHandler) {
   console.log(JSON.stringify(event));
 
-  createResponseFor(event).then((data) => {
+  createResponseFor(event, eventHandler).then((data) => {
     console.log(JSON.stringify(data));
     this.callback(null, data);
   }).catch((error) => {
@@ -35,7 +35,7 @@ SkillAdapter.prototype.handle = function(event, eventHandler) {
   });
 }
 
-function createResponseFor(event) {
+function createResponseFor(event, eventHandler) {
   let requestedNamespace = event.header.namespace;
   switch (requestedNamespace) {
     case NAMESPACE_DISCOVERY:
