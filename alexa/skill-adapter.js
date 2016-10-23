@@ -1,3 +1,5 @@
+'use strict'
+
 const NAMESPACE_CONTROL = "Alexa.ConnectedHome.Control";
 const NAMESPACE_DISCOVERY = "Alexa.ConnectedHome.Discovery";
 
@@ -34,7 +36,7 @@ SkillAdapter.prototype.handle = function(event, eventHandler) {
 }
 
 function createResponseFor(event) {
-  var requestedNamespace = event.header.namespace;
+  let requestedNamespace = event.header.namespace;
   switch (requestedNamespace) {
     case NAMESPACE_DISCOVERY:
       return eventHandler.onDiscovery().then(mapToDiscoveryResponse);
@@ -45,17 +47,17 @@ function createResponseFor(event) {
   }
 }
 
-var mapToDiscoveryResponse = function(payload) {
-  var header = createHeader(NAMESPACE_DISCOVERY, RESPONSE_DISCOVER);
+let mapToDiscoveryResponse = function(payload) {
+  let header = createHeader(NAMESPACE_DISCOVERY, RESPONSE_DISCOVER);
   return Promise.resolve(createDirective(header, payload));
 }
 
-var mapToControlResponse = function(data) {
-  var header = createHeader(NAMESPACE_CONTROL, data.type);
+let mapToControlResponse = function(data) {
+  let header = createHeader(NAMESPACE_CONTROL, data.type);
   return Promise.resolve(createDirective(header, data.payload));
 }
 
-var createHeader = function(namespace, name) {
+let createHeader = function(namespace, name) {
   return {
     "messageId": createMessageId(),
     "namespace": namespace,
@@ -65,16 +67,16 @@ var createHeader = function(namespace, name) {
 }
 
 function createMessageId() {
-  var d = new Date().getTime();
-  var uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-    var r = (d + Math.random()*16)%16 | 0;
+  let d = new Date().getTime();
+  let uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+    let r = (d + Math.random()*16)%16 | 0;
     d = Math.floor(d/16);
     return (c=='x' ? r : (r&0x3|0x8)).toString(16);
   });
   return uuid;
 }
 
-var createDirective = function(header, payload) {
+let createDirective = function(header, payload) {
   return {
     "header" : header,
     "payload" : payload

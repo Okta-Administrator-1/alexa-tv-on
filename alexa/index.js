@@ -1,15 +1,18 @@
+'use strict'
+
 const TV_ENDPOINT = require('./secrets').TV_ENDPOINT;
 const httpClient = require('request-promise-native');
+const SkillAdapter = require('./skill-adapter');
 
 exports.handler = function (event, context, callback) {
   let skillAdapter = new SkillAdapter(callback);
   skillAdapter.handle(event, eventHandler);
 }
 
-var eventHandler = {
+let eventHandler = {
 
   onDiscovery: function() {
-    var payload = {
+    let payload = {
       "discoveredAppliances": [
         {
           "applianceId":"tv-ouchadam",
@@ -31,7 +34,7 @@ var eventHandler = {
   },
 
   onControl: function(event) {
-    var requestedName = event.header.name;
+    let requestedName = event.header.name;
     switch (requestedName) {
       case SkillAdapter.REQUEST_TURN_ON :
         return handleControlTurnOn(event);
@@ -44,13 +47,13 @@ var eventHandler = {
   }
 }
 
-var handleControlTurnOn = function(event) {
+let handleControlTurnOn = function(event) {
   return toggleTv().then(() => {
     return createResponse(SkillAdapter.RESPONSE_TURN_ON);
   });
 }
 
-var handleControlTurnOff = function(event) {
+let handleControlTurnOff = function(event) {
   return toggleTv().then(() => {
     return createResponse(SkillAdapter.RESPONSE_TURN_OFF);
   });
@@ -66,7 +69,7 @@ function toggleTv() {
   });
 }
 
-var handleUnsupportedOperation = function() {
+let handleUnsupportedOperation = function() {
   return createResponse(SkillAdapter.ERROR_UNSUPPORTED_OPERATION);
 }
 
