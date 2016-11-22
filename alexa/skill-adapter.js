@@ -14,7 +14,7 @@ const RESPONSE_TURN_OFF = "TurnOffConfirmation";
 const ERROR_UNSUPPORTED_OPERATION = "UnsupportedOperationError";
 const ERROR_UNEXPECTED_INFO = "UnexpectedInformationReceivedError";
 
-let SkillAdapter = function(callback) {
+const SkillAdapter = function(callback) {
   this.callback = callback;
 }
 
@@ -31,7 +31,7 @@ SkillAdapter.prototype.handle = function(event, eventHandler) {
 }
 
 function createResponseFor(event, eventHandler) {
-  let requestedNamespace = event.header.namespace;
+  const requestedNamespace = event.header.namespace;
   switch (requestedNamespace) {
     case NAMESPACE_DISCOVERY:
       return eventHandler.onDiscovery().then(mapToDiscoveryResponse);
@@ -42,17 +42,17 @@ function createResponseFor(event, eventHandler) {
   }
 }
 
-let mapToDiscoveryResponse = function(payload) {
-  let header = createHeader(NAMESPACE_DISCOVERY, RESPONSE_DISCOVER);
+const mapToDiscoveryResponse = function(payload) {
+  const header = createHeader(NAMESPACE_DISCOVERY, RESPONSE_DISCOVER);
   return Promise.resolve(createDirective(header, payload));
 }
 
-let mapToControlResponse = function(data) {
+const mapToControlResponse = function(data) {
   let header = createHeader(NAMESPACE_CONTROL, data.type);
   return Promise.resolve(createDirective(header, data.payload));
 }
 
-let createHeader = function(namespace, name) {
+const createHeader = function(namespace, name) {
   return {
     "messageId": createMessageId(),
     "namespace": namespace,
@@ -62,16 +62,15 @@ let createHeader = function(namespace, name) {
 }
 
 function createMessageId() {
-  let d = new Date().getTime();
-  let uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-    let r = (d + Math.random()*16)%16 | 0;
-    d = Math.floor(d/16);
+  const d = new Date().getTime();
+  const uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+    const r = (d + Math.random()*16)%16 | 0;
     return (c=='x' ? r : (r&0x3|0x8)).toString(16);
   });
   return uuid;
 }
 
-let createDirective = function(header, payload) {
+const createDirective = function(header, payload) {
   return {
     "header" : header,
     "payload" : payload

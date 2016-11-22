@@ -6,12 +6,11 @@ const SkillAdapter = require('./skill-adapter').SkillAdapter;
 const Constants = require('./skill-adapter').Constants;
 
 exports.handler = function (event, context, callback) {
-  let skillAdapter = new SkillAdapter(callback);
+  const skillAdapter = new SkillAdapter(callback);
   skillAdapter.handle(event, eventHandler);
 }
 
-let eventHandler = {
-
+const eventHandler = {
   onDiscovery: function() {
     let payload = {
       "discoveredAppliances": [
@@ -48,13 +47,13 @@ let eventHandler = {
   }
 }
 
-let handleControlTurnOn = function(event) {
+const handleControlTurnOn = function(event) {
   return toggleTv().then(() => {
     return createResponse(Constants.RESPONSE_TURN_ON);
   });
 }
 
-let handleControlTurnOff = function(event) {
+const handleControlTurnOff = function(event) {
   return toggleTv().then(() => {
     return createResponse(Constants.RESPONSE_TURN_OFF);
   });
@@ -70,7 +69,7 @@ function toggleTv() {
   });
 }
 
-let handleUnsupportedOperation = function() {
+const handleUnsupportedOperation = function() {
   return createResponse(Constants.ERROR_UNSUPPORTED_OPERATION);
 }
 
