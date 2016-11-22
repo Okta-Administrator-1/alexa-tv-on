@@ -60,8 +60,6 @@ const handleControlTurnOff = function(event) {
 }
 
 function toggleTv() {
-  // not needed if you're using http or have a legit ssl cert
-  process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
   return httpClient(TV_ENDPOINT).then((body) => {
     return Promise.resolve('success');
   }).catch(err => {
